@@ -1,0 +1,739 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Cart - Fruits Vatika</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <h1>Fruits Vatika</h1>
+        <nav>
+            <a href="index.html">Home</a>
+            <a href="cart.html">Cart</a>
+            <a href="wishlist.html">Wishlist</a>
+            <a href="track-orders.html">Track Orders</a>
+        </nav>
+    </header>
+    
+    <main>
+        <section class="cart-section">
+            <h2>Your Cart</h2>
+            <div id="cart-list" class="product-list"></div>
+            <p id="cart-empty">Your cart is empty.</p>
+            <p id="cart-login-msg" style="display:none; color:red;">Please <a href='index.html'>login</a> to view your cart.</p>
+        </section>
+        
+        <a href="index.html">&larr; Back to Home</a>
+        
+        <button id="buy-now-btn" style="margin-top:2rem;display:block;width:100%;padding:0.8rem 0;font-size:1.1rem;font-weight:bold;background:#4caf50;color:#fff;border:none;border-radius:8px;cursor:pointer;">Buy Now</button>
+        
+        <section class="support-section">
+            <h2>Customer Support</h2>
+            <div class="support-info">
+                <div class="support-item">
+                    <h3>📧 Email Support</h3>
+                    <p><a href="mailto:support@fruitsvatika.com">support@fruitsvatika.com</a></p>
+                </div>
+                <div class="support-item">
+                    <h3>📞 Phone Support</h3>
+                    <p><a href="tel:+916204760969">+91 6204760969</a></p>
+                </div>
+                <div class="support-item">
+                    <h3>🕒 Support Hours</h3>
+                    <p>Monday - Saturday: 9:00 AM - 8:00 PM</p>
+                    <p>Sunday: 10:00 AM - 6:00 PM</p>
+                </div>
+            </div>
+        </section>
+        
+        <section class="owner-section">
+            <h2>Owner Details</h2>
+            <div class="owner-info">
+                <div class="owner-card">
+                    <div class="owner-avatar">
+                        <img src="founder_new.jpg" alt="Founder" style="width: 80px; height: 80px; border-radius: 50%; object-fit: cover;">
+                    </div>
+                    <div class="owner-details">
+                        <h3>Ayush Singh</h3>
+                        <p class="owner-title">Founder & CEO</p>
+                        <div class="owner-contact">
+                            <p><strong>📧 Personal Email:</strong> <a href="mailto:ayushrajmgr1@gmail.com">ayushrajmgr1@gmail.com</a></p>
+                            <p><strong>📞 Phone:</strong> <a href="tel:+916204760969">+91 6204760969</a></p>
+                            <p><strong>🏢 Business:</strong> Fruits Vatika</p>
+                            <p><strong>📍 Location:</strong> Patna, Bihar, India</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Payment Method Selection Modal -->
+    <div id="payment-method-modal" class="modal" style="display:none;">
+        <div class="modal-content" style="text-align:center; max-width:500px;">
+            <span id="payment-method-close" class="modal-close">&times;</span>
+            <h2>Choose Payment Method</h2>
+            <div id="payment-method-details" style="background:#f8f9fa;padding:1rem;border-radius:8px;margin-bottom:1rem;">
+                <p><strong>Items:</strong> <span id="pm-cart-items"></span></p>
+                <p><strong>Total Amount:</strong> <span id="pm-cart-total"></span></p>
+            </div>
+            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:15px;margin-bottom:1rem;">
+                <button id="qr-payment-btn" style="background:#4caf50;color:white;border:none;padding:15px;border-radius:8px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:5px;">
+                    <span style="font-size:1.5rem;">📱</span>
+                    <span>QR Payment</span>
+                </button>
+                <button id="card-payment-btn" style="background:#2196f3;color:white;border:none;padding:15px;border-radius:8px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:5px;">
+                    <span style="font-size:1.5rem;">💳</span>
+                    <span>Card Payment</span>
+                </button>
+                <button id="cod-payment-btn" style="background:#ff9800;color:white;border:none;padding:15px;border-radius:8px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:5px;">
+                    <span style="font-size:1.5rem;">💰</span>
+                    <span>Cash on Delivery</span>
+                </button>
+            </div>
+            <button id="payment-method-cancel" style="background:#f44336;color:white;border:none;padding:10px 20px;border-radius:5px;cursor:pointer;">Cancel</button>
+        </div>
+    </div>
+
+    <!-- QR Code Payment Modal -->
+    <div id="qr-payment-modal" class="modal" style="display:none;">
+        <div class="modal-content" style="text-align:center; width:90%; max-width:600px; min-width:320px; max-height:90vh; overflow:hidden; display:flex; flex-direction:column;">
+            <div style="flex:1; overflow-y:auto; padding:20px;">
+                <span id="qr-modal-close" class="modal-close">&times;</span>
+                <h2>QR Code Payment</h2>
+                <div style="font-size:3rem;margin:1rem 0;">📱</div>
+                <p style="margin-bottom:1rem; color:#666;">Scan this QR code to complete your payment</p>
+                <img src="qr_new.jpg" alt="Payment QR Code" style="width:200px;height:200px;border:2px solid #ddd;border-radius:8px;margin-bottom:1rem;">
+                <div id="qr-payment-details" style="background:#f8f9fa;padding:1rem;border-radius:8px;margin-bottom:1rem;">
+                    <p><strong>Items:</strong> <span id="qr-cart-items"></span></p>
+                    <p><strong>Total Amount:</strong> <span id="qr-cart-total"></span></p>
+                </div>
+                
+                <!-- Shipping Details Form -->
+                <div style="text-align:left;margin-bottom:1rem;max-height:50vh;overflow-y:auto;padding-right:10px;border:1px solid #eee;border-radius:8px;padding:15px;">
+                    <h3 style="margin-bottom:1rem;color:#333;position:sticky;top:0;background:white;padding:10px 0;margin-top:0;">Shipping Details</h3>
+                    <label>Full Name:<br><input type="text" id="qr-full-name" placeholder="Enter your full name" required style="width:100%;padding:8px;border:1px solid #ddd;border-radius:4px;margin-bottom:10px;box-sizing:border-box;"></label>
+                    <label>Phone Number:<br><input type="tel" id="qr-phone" placeholder="Enter your phone number" required pattern="[0-9]{10,15}" style="width:100%;padding:8px;border:1px solid #ddd;border-radius:4px;margin-bottom:10px;box-sizing:border-box;"></label>
+                    <label>Alternate Phone Number:<br><input type="tel" id="qr-alt-phone" placeholder="Enter alternate phone number (optional)" pattern="[0-9]{10,15}" style="width:100%;padding:8px;border:1px solid #ddd;border-radius:4px;margin-bottom:10px;box-sizing:border-box;"></label>
+                    <label>Shipping Address:<br><textarea id="qr-address" placeholder="Enter your complete shipping address" required rows="3" style="width:100%;padding:8px;border:1px solid #ddd;border-radius:4px;margin-bottom:10px;resize:vertical;box-sizing:border-box;"></textarea></label>
+                    <label>City:<br><input type="text" id="qr-city" placeholder="Enter your city" required style="width:100%;padding:8px;border:1px solid #ddd;border-radius:4px;margin-bottom:10px;box-sizing:border-box;"></label>
+                    <label>Pincode:<br><input type="text" id="qr-pincode" placeholder="Enter pincode" required pattern="[0-9]{6}" style="width:100%;padding:8px;border:1px solid #ddd;border-radius:4px;margin-bottom:10px;box-sizing:border-box;"></label>
+                </div>
+            </div>
+            
+            <!-- Fixed Button Container -->
+            <div style="padding:20px;border-top:1px solid #eee;background:white;display:flex;gap:10px;justify-content:center;flex-wrap:wrap;">
+                <button id="qr-confirm-cart-payment" style="background:#4caf50;color:white;border:none;padding:12px 24px;border-radius:5px;cursor:pointer;min-width:120px;font-size:14px;">Confirm Payment</button>
+                <button id="qr-cancel-cart-payment" style="background:#f44336;color:white;border:none;padding:12px 24px;border-radius:5px;cursor:pointer;min-width:120px;font-size:14px;">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Card Payment Modal -->
+    <div id="card-payment-modal" class="modal" style="display:none;">
+        <div class="modal-content" style="text-align:center; max-width:400px;">
+            <span id="card-modal-close" class="modal-close">&times;</span>
+            <h2>Card Payment</h2>
+            <div id="card-payment-details" style="background:#f8f9fa;padding:1rem;border-radius:8px;margin-bottom:1rem;">
+                <p><strong>Items:</strong> <span id="card-cart-items"></span></p>
+                <p><strong>Total Amount:</strong> <span id="card-cart-total"></span></p>
+            </div>
+            <div style="text-align:left;margin-bottom:1rem;">
+                <label>Card Number:<br><input type="text" id="card-number" placeholder="1234 5678 9012 3456" maxlength="19" style="width:100%;padding:8px;border:1px solid #ddd;border-radius:4px;margin-bottom:10px;"></label>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+                    <label>Expiry Date:<br><input type="text" id="card-expiry" placeholder="MM/YY" maxlength="5" style="width:100%;padding:8px;border:1px solid #ddd;border-radius:4px;"></label>
+                    <label>CVV:<br><input type="text" id="card-cvv" placeholder="123" maxlength="3" style="width:100%;padding:8px;border:1px solid #ddd;border-radius:4px;"></label>
+                </div>
+            </div>
+            <div style="display:flex;gap:10px;justify-content:center;">
+                <button id="card-confirm-cart-payment" style="background:#2196f3;color:white;border:none;padding:10px 20px;border-radius:5px;cursor:pointer;">Pay Now</button>
+                <button id="card-cancel-cart-payment" style="background:#f44336;color:white;border:none;padding:10px 20px;border-radius:5px;cursor:pointer;">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Cash on Delivery Modal -->
+    <div id="cod-payment-modal" class="modal" style="display:none;">
+        <div class="modal-content" style="text-align:center; width:90%; max-width:600px; min-width:320px; max-height:90vh; overflow:hidden; display:flex; flex-direction:column;">
+            <div style="flex:1; overflow-y:auto; padding:20px;">
+                <span id="cod-modal-close" class="modal-close">&times;</span>
+                <h2>Cash on Delivery</h2>
+                <div style="font-size:3rem;margin:1rem 0;">💰</div>
+                <div id="cod-payment-details" style="background:#f8f9fa;padding:1rem;border-radius:8px;margin-bottom:1rem;">
+                    <p><strong>Items:</strong> <span id="cod-cart-items"></span></p>
+                    <p><strong>Total Amount:</strong> <span id="cod-cart-total"></span></p>
+                    <p style="color:#ff9800;font-weight:bold;margin-top:10px;">Pay when you receive your order!</p>
+                </div>
+                
+                <!-- Shipping Details Form -->
+                <div style="text-align:left;margin-bottom:1rem;max-height:50vh;overflow-y:auto;padding-right:10px;border:1px solid #eee;border-radius:8px;padding:15px;">
+                    <h3 style="margin-bottom:1rem;color:#333;position:sticky;top:0;background:white;padding:10px 0;margin-top:0;">Shipping Details</h3>
+                    <label>Full Name:<br><input type="text" id="cod-full-name" placeholder="Enter your full name" required style="width:100%;padding:8px;border:1px solid #ddd;border-radius:4px;margin-bottom:10px;box-sizing:border-box;"></label>
+                    <label>Phone Number:<br><input type="tel" id="cod-phone" placeholder="Enter your phone number" required pattern="[0-9]{10,15}" style="width:100%;padding:8px;border:1px solid #ddd;border-radius:4px;margin-bottom:10px;box-sizing:border-box;"></label>
+                    <label>Alternate Phone Number:<br><input type="tel" id="cod-alt-phone" placeholder="Enter alternate phone number (optional)" pattern="[0-9]{10,15}" style="width:100%;padding:8px;border:1px solid #ddd;border-radius:4px;margin-bottom:10px;box-sizing:border-box;"></label>
+                    <label>Shipping Address:<br><textarea id="cod-address" placeholder="Enter your complete shipping address" required rows="3" style="width:100%;padding:8px;border:1px solid #ddd;border-radius:4px;margin-bottom:10px;resize:vertical;box-sizing:border-box;"></textarea></label>
+                    <label>City:<br><input type="text" id="cod-city" placeholder="Enter your city" required style="width:100%;padding:8px;border:1px solid #ddd;border-radius:4px;margin-bottom:10px;box-sizing:border-box;"></label>
+                    <label>Pincode:<br><input type="text" id="cod-pincode" placeholder="Enter pincode" required pattern="[0-9]{6}" style="width:100%;padding:8px;border:1px solid #ddd;border-radius:4px;margin-bottom:10px;box-sizing:border-box;"></label>
+                </div>
+            </div>
+            
+            <!-- Fixed Button Container -->
+            <div style="padding:20px;border-top:1px solid #eee;background:white;display:flex;gap:10px;justify-content:center;flex-wrap:wrap;">
+                <button id="cod-confirm-cart-payment" style="background:#ff9800;color:white;border:none;padding:12px 24px;border-radius:5px;cursor:pointer;min-width:120px;font-size:14px;">Confirm Order</button>
+                <button id="cod-cancel-cart-payment" style="background:#f44336;color:white;border:none;padding:12px 24px;border-radius:5px;cursor:pointer;min-width:120px;font-size:14px;">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    // Fruit data (matching script.js)
+    const fruitData = {
+        'Apple': {rate: '₹225 per kg', img: 'apple_new.jpg'},
+        'Banana': {rate: '₹80 per dozen', img: 'banana_new.jpg'},
+        'Orange': {rate: '₹100 per kg', img: 'orange_new.jpg'},
+        'Strawberry': {rate: '₹450 per kg', img: 'strawberry_new.jpg'},
+        'Grapes': {rate: '₹200 per kg', img: 'grapes_new.jpg'},
+        'Pineapple': {rate: '₹150 per piece', img: 'pineapple_new.jpg'},
+        'Mango': {rate: '₹100 per kg', img: 'mango_new (1).jpg'},
+        'Watermelon': {rate: '₹75 per kg', img: 'watermelon_new.jpg'},
+        'Papaya': {rate: '₹60 per kg', img: 'papaya_new.jpg'},
+        'Kiwi': {rate: '₹200 per 3 piece', img: 'kiwi_new.jpg'},
+
+        'Cherry': {rate: '₹525 per kg', img: 'cherry_new.jpg'},
+        'Blueberry': {rate: '₹600 per kg', img: 'blueberry_new.jpg'},
+        'Guava': {rate: '₹150 per kg', img: 'guava_new.jpg'},
+        'Lemon': {rate: '₹100 per 15 piece', img: 'lemon_new.jpg'}
+    };
+
+    // Session management functions
+    function getSession() {
+        const session = localStorage.getItem('fruitshop_session');
+        if (!session) return null;
+        try { return JSON.parse(session); } catch { return null; }
+    }
+    
+    function isSessionValid(session) {
+        if (!session) return false;
+        return (Date.now() - session.loginTime) < 10 * 60 * 1000;
+    }
+    
+    function getCurrentUserEmail() {
+        const session = getSession();
+        return session && isSessionValid(session) ? session.email : null;
+    }
+    
+    function getUserCartKey(email) { 
+        return email ? `cart_${email}` : null; 
+    }
+    
+    function getUserCart(email) {
+        if (!email) return [];
+        return JSON.parse(localStorage.getItem(getUserCartKey(email)) || '[]');
+    }
+    
+    function setUserCart(email, cart) {
+        if (!email) return;
+        localStorage.setItem(getUserCartKey(email), JSON.stringify(cart));
+    }
+
+    // DOM elements
+    const cartList = document.getElementById('cart-list');
+    const cartEmpty = document.getElementById('cart-empty');
+    const cartLoginMsg = document.getElementById('cart-login-msg');
+    const email = getCurrentUserEmail();
+
+    if (!email) {
+        // User not logged in
+        cartList.style.display = 'none';
+        cartEmpty.style.display = 'none';
+        cartLoginMsg.style.display = 'block';
+    } else {
+        // User logged in - show cart
+        let cart = getUserCart(email);
+        
+        function renderCart() {
+            cartList.innerHTML = '';
+            
+            if (cart.length === 0) {
+                cartEmpty.style.display = 'block';
+            } else {
+                cartEmpty.style.display = 'none';
+                
+                // Remove undefined or invalid items
+                cart = cart.filter(itemObj => fruitData[itemObj.name]);
+                setUserCart(email, cart);
+                
+                cart.forEach((itemObj, idx) => {
+                    const item = itemObj.name;
+                    const qty = itemObj.qty || 1;
+                    const data = fruitData[item];
+                    
+                    if (!data) return; // skip undefined
+                    
+                    const div = document.createElement('div');
+                    div.className = 'product';
+                    div.innerHTML = `
+                        <img src="${data.img}" alt="${item}" style="width:100px;height:100px;border-radius:50%;margin-bottom:0.5rem;">
+                        <h3>${item} <span style='font-size:1rem;color:#888;'>(<button class='qty-btn' data-idx='${idx}' data-action='dec'>−</button> <span id='qty-${idx}'>${qty}</span> <button class='qty-btn' data-idx='${idx}' data-action='inc'>+</button>)</span></h3>
+                        <p>${data.rate}</p>
+                    `;
+                    cartList.appendChild(div);
+                });
+            }
+        }
+        
+        renderCart();
+        
+        // Quantity button event listeners
+        cartList.addEventListener('click', function(e) {
+            if (e.target.classList.contains('qty-btn')) {
+                const idx = parseInt(e.target.getAttribute('data-idx'));
+                const action = e.target.getAttribute('data-action');
+                
+                if (action === 'inc') {
+                    cart[idx].qty = (cart[idx].qty || 1) + 1;
+                } else if (action === 'dec') {
+                    cart[idx].qty = (cart[idx].qty || 1) - 1;
+                    if (cart[idx].qty <= 0) {
+                        cart.splice(idx, 1);
+                    }
+                }
+                
+                setUserCart(email, cart);
+                renderCart();
+            }
+        });
+    }
+
+    // QR Payment Modal functionality
+    const qrPaymentModal = document.getElementById('qr-payment-modal');
+    const qrModalClose = document.getElementById('qr-modal-close');
+    const qrConfirmCartPayment = document.getElementById('qr-confirm-cart-payment');
+    const qrCancelCartPayment = document.getElementById('qr-cancel-cart-payment');
+    let cartPurchaseData = null;
+
+    // Close QR modal
+    if (qrPaymentModal) {
+        qrModalClose.onclick = () => { qrPaymentModal.style.display = 'none'; };
+        qrPaymentModal.onclick = (e) => { if (e.target === qrPaymentModal) qrPaymentModal.style.display = 'none'; };
+        qrCancelCartPayment.onclick = () => { qrPaymentModal.style.display = 'none'; };
+    }
+
+    // Show QR payment modal for cart
+    function showCartQRPaymentModal(purchaseItems, total) {
+        const itemNames = purchaseItems.map(item => `${item.item_name} (${item.quantity})`).join(', ');
+        
+        document.getElementById('qr-cart-items').textContent = itemNames;
+        document.getElementById('qr-cart-total').textContent = `₹${total.toFixed(2)}`;
+        
+        cartPurchaseData = { purchaseItems, total };
+        qrPaymentModal.style.display = 'flex';
+    }
+
+    // Confirm cart payment and process purchase
+    if (qrConfirmCartPayment) {
+        qrConfirmCartPayment.onclick = async function() {
+            // Validate shipping details
+            const fullName = document.getElementById('qr-full-name').value.trim();
+            const phone = document.getElementById('qr-phone').value.trim();
+            const altPhone = document.getElementById('qr-alt-phone').value.trim();
+            const address = document.getElementById('qr-address').value.trim();
+            const city = document.getElementById('qr-city').value.trim();
+            const pincode = document.getElementById('qr-pincode').value.trim();
+            
+            // Required field validation
+            if (!fullName || !phone || !address || !city || !pincode) {
+                alert('Please fill in all required fields.');
+                return;
+            }
+            
+            // Phone number validation
+            if (!/^[0-9]{10,15}$/.test(phone)) {
+                alert('Please enter a valid phone number (10-15 digits).');
+                return;
+            }
+            
+            // Alternate phone validation (if provided)
+            if (altPhone && !/^[0-9]{10,15}$/.test(altPhone)) {
+                alert('Please enter a valid alternate phone number (10-15 digits).');
+                return;
+            }
+            
+            // Pincode validation
+            if (!/^[0-9]{6}$/.test(pincode)) {
+                alert('Please enter a valid 6-digit pincode.');
+                return;
+            }
+            
+            // Show shipping details confirmation
+            const shippingDetails = {
+                fullName,
+                phone,
+                altPhone,
+                address,
+                city,
+                pincode
+            };
+            
+            const confirmShipping = confirm(
+                `Please confirm your shipping details:\n\n` +
+                `Name: ${fullName}\n` +
+                `Phone: ${phone}\n` +
+                `Address: ${address}\n` +
+                `City: ${city}\n` +
+                `Pincode: ${pincode}\n\n` +
+                `Proceed with QR payment?`
+            );
+            
+            if (confirmShipping) {
+                await processCartPayment('QR Payment', shippingDetails);
+            }
+        };
+    }
+
+    // Payment Method Selection Modal functionality
+    const paymentMethodModal = document.getElementById('payment-method-modal');
+    const paymentMethodClose = document.getElementById('payment-method-close');
+    const paymentMethodCancel = document.getElementById('payment-method-cancel');
+    const qrPaymentBtn = document.getElementById('qr-payment-btn');
+    const cardPaymentBtn = document.getElementById('card-payment-btn');
+    const codPaymentBtn = document.getElementById('cod-payment-btn');
+    let cartPaymentData = null;
+
+    // Close payment method modal
+    if (paymentMethodModal) {
+        paymentMethodClose.onclick = () => { paymentMethodModal.style.display = 'none'; };
+        paymentMethodModal.onclick = (e) => { if (e.target === paymentMethodModal) paymentMethodModal.style.display = 'none'; };
+        paymentMethodCancel.onclick = () => { paymentMethodModal.style.display = 'none'; };
+    }
+
+    // Show payment method selection modal for cart
+    function showCartPaymentMethodModal(purchaseItems, total) {
+        const itemNames = purchaseItems.map(item => `${item.item_name} (${item.quantity})`).join(', ');
+        
+        document.getElementById('pm-cart-items').textContent = itemNames;
+        document.getElementById('pm-cart-total').textContent = `₹${total.toFixed(2)}`;
+        
+        cartPaymentData = { purchaseItems, total };
+        paymentMethodModal.style.display = 'flex';
+    }
+
+    // Payment method button handlers for cart
+    if (qrPaymentBtn) {
+        qrPaymentBtn.onclick = () => {
+            paymentMethodModal.style.display = 'none';
+            showCartQRPaymentModal(cartPaymentData.purchaseItems, cartPaymentData.total);
+        };
+    }
+
+    if (cardPaymentBtn) {
+        cardPaymentBtn.onclick = () => {
+            paymentMethodModal.style.display = 'none';
+            showCartCardPaymentModal(cartPaymentData.purchaseItems, cartPaymentData.total);
+        };
+    }
+
+    if (codPaymentBtn) {
+        codPaymentBtn.onclick = () => {
+            paymentMethodModal.style.display = 'none';
+            showCartCODPaymentModal(cartPaymentData.purchaseItems, cartPaymentData.total);
+        };
+    }
+
+    // Card Payment Modal functionality for cart
+    const cardPaymentModal = document.getElementById('card-payment-modal');
+    const cardModalClose = document.getElementById('card-modal-close');
+    const cardConfirmCartPayment = document.getElementById('card-confirm-cart-payment');
+    const cardCancelCartPayment = document.getElementById('card-cancel-cart-payment');
+
+    // Close card modal
+    if (cardPaymentModal) {
+        cardModalClose.onclick = () => { cardPaymentModal.style.display = 'none'; };
+        cardPaymentModal.onclick = (e) => { if (e.target === cardPaymentModal) cardPaymentModal.style.display = 'none'; };
+        cardCancelCartPayment.onclick = () => { cardPaymentModal.style.display = 'none'; };
+    }
+
+    // Show card payment modal for cart
+    function showCartCardPaymentModal(purchaseItems, total) {
+        const itemNames = purchaseItems.map(item => `${item.item_name} (${item.quantity})`).join(', ');
+        
+        document.getElementById('card-cart-items').textContent = itemNames;
+        document.getElementById('card-cart-total').textContent = `₹${total.toFixed(2)}`;
+        
+        cartPaymentData = { purchaseItems, total };
+        cardPaymentModal.style.display = 'flex';
+    }
+
+    // Card payment confirmation for cart
+    if (cardConfirmCartPayment) {
+        cardConfirmCartPayment.onclick = async function() {
+            const cardNumber = document.getElementById('card-number').value.trim();
+            const cardExpiry = document.getElementById('card-expiry').value.trim();
+            const cardCvv = document.getElementById('card-cvv').value.trim();
+            
+            if (!cardNumber || !cardExpiry || !cardCvv) {
+                alert('Please fill in all card details.');
+                return;
+            }
+            
+            if (cardNumber.length < 16) {
+                alert('Please enter a valid card number.');
+                return;
+            }
+            
+            if (cardCvv.length < 3) {
+                alert('Please enter a valid CVV.');
+                return;
+            }
+            
+            // Process card payment for cart
+            await processCartPayment('Card Payment');
+        };
+    }
+
+    // Cash on Delivery Modal functionality for cart
+    const codPaymentModal = document.getElementById('cod-payment-modal');
+    const codModalClose = document.getElementById('cod-modal-close');
+    const codConfirmCartPayment = document.getElementById('cod-confirm-cart-payment');
+    const codCancelCartPayment = document.getElementById('cod-cancel-cart-payment');
+
+    // Close COD modal
+    if (codPaymentModal) {
+        codModalClose.onclick = () => { codPaymentModal.style.display = 'none'; };
+        codPaymentModal.onclick = (e) => { if (e.target === codPaymentModal) codPaymentModal.style.display = 'none'; };
+        codCancelCartPayment.onclick = () => { codPaymentModal.style.display = 'none'; };
+    }
+
+    // Show COD payment modal for cart
+    function showCartCODPaymentModal(purchaseItems, total) {
+        const itemNames = purchaseItems.map(item => `${item.item_name} (${item.quantity})`).join(', ');
+        
+        document.getElementById('cod-cart-items').textContent = itemNames;
+        document.getElementById('cod-cart-total').textContent = `₹${total.toFixed(2)}`;
+        
+        cartPaymentData = { purchaseItems, total };
+        codPaymentModal.style.display = 'flex';
+    }
+
+    // COD payment confirmation for cart
+    if (codConfirmCartPayment) {
+        codConfirmCartPayment.onclick = async function() {
+            // Validate shipping details
+            const fullName = document.getElementById('cod-full-name').value.trim();
+            const phone = document.getElementById('cod-phone').value.trim();
+            const altPhone = document.getElementById('cod-alt-phone').value.trim();
+            const address = document.getElementById('cod-address').value.trim();
+            const city = document.getElementById('cod-city').value.trim();
+            const pincode = document.getElementById('cod-pincode').value.trim();
+            
+            // Required field validation
+            if (!fullName || !phone || !address || !city || !pincode) {
+                alert('Please fill in all required fields.');
+                return;
+            }
+            
+            // Phone number validation
+            if (!/^[0-9]{10,15}$/.test(phone)) {
+                alert('Please enter a valid phone number (10-15 digits).');
+                return;
+            }
+            
+            // Alternate phone validation (if provided)
+            if (altPhone && !/^[0-9]{10,15}$/.test(altPhone)) {
+                alert('Please enter a valid alternate phone number (10-15 digits).');
+                return;
+            }
+            
+
+            
+            // Pincode validation
+            if (!/^[0-9]{6}$/.test(pincode)) {
+                alert('Please enter a valid 6-digit pincode.');
+                return;
+            }
+            
+            // Show shipping details confirmation
+            const shippingDetails = {
+                fullName,
+                phone,
+                altPhone,
+                address,
+                city,
+                pincode
+            };
+            
+            const confirmShipping = confirm(
+                `Please confirm your shipping details:\n\n` +
+                `Name: ${fullName}\n` +
+                `Phone: ${phone}\n` +
+                `Address: ${address}\n` +
+                `City: ${city}\n` +
+                `Pincode: ${pincode}\n\n` +
+                `Proceed with order?`
+            );
+            
+            if (confirmShipping) {
+                await processCartPayment('Cash on Delivery', shippingDetails);
+            }
+        };
+    }
+
+    // Generic cart payment processing function
+    async function processCartPayment(paymentMethod, shippingDetails = null) {
+        if (!cartPaymentData) return;
+        
+        const userData = sessionStorage.getItem('user');
+        if (!userData) {
+            alert('User session not found. Please login again.');
+            return;
+        }
+        
+        try {
+            const user = JSON.parse(userData);
+            const userId = user.id;
+            
+            // Process each item purchase
+            let successCount = 0;
+            let orderIds = [];
+            for (const item of cartPaymentData.purchaseItems) {
+                try {
+                    // Prepare purchase data
+                    const purchaseData = {
+                        user_id: userId,
+                        item_name: item.item_name,
+                        quantity: item.quantity,
+                        price: item.price
+                    };
+                    
+                    // Add shipping address for COD and QR orders
+                    if ((paymentMethod === 'Cash on Delivery' || paymentMethod === 'QR Payment') && shippingDetails) {
+                        // Format shipping address as a single string
+                        const shippingAddress = `${shippingDetails.fullName}, ${shippingDetails.address}, ${shippingDetails.city} - ${shippingDetails.pincode}, Phone: ${shippingDetails.phone}`;
+                        purchaseData.shipping_address = shippingAddress;
+                    }
+                    
+                    const res = await fetch('http://localhost:5000/purchase', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(purchaseData)
+                    });
+                    
+                    if (res.ok) {
+                        const responseData = await res.json();
+                        if (responseData.order_id) {
+                            orderIds.push(responseData.order_id);
+                        }
+                        successCount++;
+                    } else {
+                        console.error(`Failed to purchase ${item.item_name}:`, await res.text());
+                    }
+                } catch (err) {
+                    console.error(`Error purchasing ${item.item_name}:`, err);
+                }
+            }
+            
+            if (successCount === cartPaymentData.purchaseItems.length) {
+                let successMessage = `${paymentMethod} successful! All ${successCount} items have been purchased.\nTotal: ₹${cartPaymentData.total.toFixed(2)}`;
+                
+                // Add order IDs to success message
+                if (orderIds.length > 0) {
+                    successMessage += `\n\nOrder IDs: ${orderIds.join(', ')}`;
+                }
+                
+                // Add shipping info for COD and QR orders
+                if ((paymentMethod === 'Cash on Delivery' || paymentMethod === 'QR Payment') && shippingDetails) {
+                    successMessage += `\n\nShipping to: ${shippingDetails.fullName}\nAddress: ${shippingDetails.address}, ${shippingDetails.city} - ${shippingDetails.pincode}\nPhone: ${shippingDetails.phone}`;
+                }
+                
+                alert(successMessage);
+                
+                // Clear cart after successful purchase
+                setUserCart(email, []);
+                renderCart();
+                
+                // Close all modals
+                qrPaymentModal.style.display = 'none';
+                cardPaymentModal.style.display = 'none';
+                codPaymentModal.style.display = 'none';
+                
+                // Clear form fields
+                document.getElementById('card-number').value = '';
+                document.getElementById('card-expiry').value = '';
+                document.getElementById('card-cvv').value = '';
+                
+                // Clear form fields
+                if (paymentMethod === 'Cash on Delivery') {
+                    document.getElementById('cod-full-name').value = '';
+                    document.getElementById('cod-phone').value = '';
+                    document.getElementById('cod-alt-phone').value = '';
+                    document.getElementById('cod-address').value = '';
+                    document.getElementById('cod-city').value = '';
+                    document.getElementById('cod-pincode').value = '';
+                }
+                
+                // Clear QR form fields
+                if (paymentMethod === 'QR Payment') {
+                    document.getElementById('qr-full-name').value = '';
+                    document.getElementById('qr-phone').value = '';
+                    document.getElementById('qr-alt-phone').value = '';
+                    document.getElementById('qr-address').value = '';
+                    document.getElementById('qr-city').value = '';
+                    document.getElementById('qr-pincode').value = '';
+                }
+            } else {
+                alert(`Purchase partially completed. ${successCount} out of ${cartPaymentData.purchaseItems.length} items purchased.`);
+            }
+            
+        } catch (err) {
+            console.error('Purchase error:', err);
+            alert('Error processing purchase. Please try again.');
+        }
+    }
+
+    // Buy Now button functionality
+    document.getElementById('buy-now-btn').onclick = function() {
+        let total = 0;
+        let purchaseItems = [];
+        
+        if (!email) {
+            alert('Please log in to buy items.');
+            return;
+        }
+        
+        let cart = getUserCart(email);
+        
+        if (cart.length === 0) {
+            alert('Your cart is empty!');
+            return;
+        }
+        
+        // Calculate total and prepare purchase items
+        cart.forEach(itemObj => {
+            const item = itemObj.name;
+            const qty = itemObj.qty || 1;
+            const data = fruitData[item];
+            
+            if (!data) return;
+            
+            // Extract price from rate string (e.g., '₹225 per kg')
+            const match = data.rate.match(/₹(\d+(?:\.\d+)?)/);
+            const price = match ? parseFloat(match[1]) : 0;
+            const itemTotal = price * qty;
+            total += itemTotal;
+            
+            purchaseItems.push({
+                item_name: item,
+                quantity: qty,
+                price: price,
+                total: itemTotal
+            });
+        });
+        
+        // Show payment method selection modal
+        showCartPaymentMethodModal(purchaseItems, total);
+    };
+    </script>
+</body>
+</html> 

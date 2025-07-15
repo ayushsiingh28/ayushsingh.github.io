@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Wishlist - Fruits Vatika</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <h1>Fruits Vatika</h1>
+        <nav>
+            <a href="index.html">Home</a>
+            <a href="cart.html">Cart</a>
+            <a href="wishlist.html">Wishlist</a>
+            <a href="track-orders.html">Track Orders</a>
+        </nav>
+    </header>
+    
+    <main>
+        <section class="wishlist-section">
+            <h2>Your Wishlist</h2>
+            <div id="wishlist-list" class="product-list"></div>
+            <p id="wishlist-empty">Your wishlist is empty.</p>
+            <p id="wishlist-login-msg" style="display:none; color:red;">Please <a href='index.html'>login</a> to view your wishlist.</p>
+        </section>
+        
+        <a href="index.html">&larr; Back to Home</a>
+        
+        <section class="support-section">
+            <h2>Customer Support</h2>
+            <div class="support-info">
+                <div class="support-item">
+                    <h3>📧 Email Support</h3>
+                    <p><a href="mailto:support@fruitsvatika.com">support@fruitsvatika.com</a></p>
+                </div>
+                <div class="support-item">
+                    <h3>📞 Phone Support</h3>
+                    <p><a href="tel:+916204760969">+91 6204760969</a></p>
+                </div>
+                <div class="support-item">
+                    <h3>🕒 Support Hours</h3>
+                    <p>Monday - Saturday: 9:00 AM - 8:00 PM</p>
+                    <p>Sunday: 10:00 AM - 6:00 PM</p>
+                </div>
+            </div>
+        </section>
+        
+        <section class="owner-section">
+            <h2>Owner Details</h2>
+            <div class="owner-info">
+                <div class="owner-card">
+                    <div class="owner-avatar">
+                        <img src="founder_new.jpg" alt="Founder" style="width: 80px; height: 80px; border-radius: 50%; object-fit: cover;">
+                    </div>
+                    <div class="owner-details">
+                        <h3>Ayush Singh</h3>
+                        <p class="owner-title">Founder & CEO</p>
+                        <div class="owner-contact">
+                            <p><strong>📧 Personal Email:</strong> <a href="mailto:ayushrajmgr1@gmail.com">ayushrajmgr1@gmail.com</a></p>
+                            <p><strong>📞 Phone:</strong> <a href="tel:+916204760969">+91 6204760969</a></p>
+                            <p><strong>🏢 Business:</strong> Fruits Vatika</p>
+                            <p><strong>📍 Location:</strong> Patna, Bihar, India</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script>
+    // Fruit data (matching script.js)
+    const fruitData = {
+        'Apple': {rate: '₹225 per kg', img: 'apple_new.jpg'},
+        'Banana': {rate: '₹80 per dozen', img: 'banana_new.jpg'},
+        'Orange': {rate: '₹100 per kg', img: 'orange_new.jpg'},
+        'Strawberry': {rate: '₹450 per kg', img: 'strawberry_new.jpg'},
+        'Grapes': {rate: '₹200 per kg', img: 'grapes_new.jpg'},
+        'Pineapple': {rate: '₹150 per piece', img: 'pineapple_new.jpg'},
+        'Mango': {rate: '₹100 per kg', img: 'mango_new (1).jpg'},
+        'Watermelon': {rate: '₹75 per kg', img: 'watermelon_new.jpg'},
+        'Papaya': {rate: '₹60 per kg', img: 'papaya_new.jpg'},
+        'Kiwi': {rate: '₹200 per 3 piece', img: 'kiwi_new.jpg'},
+
+        'Cherry': {rate: '₹525 per kg', img: 'cherry_new.jpg'},
+        'Blueberry': {rate: '₹600 per kg', img: 'blueberry_new.jpg'},
+        'Guava': {rate: '₹150 per kg', img: 'guava_new.jpg'},
+        'Lemon': {rate: '₹100 per 15 piece', img: 'lemon_new.jpg'}
+    };
+
+    // Session management functions
+    function getSession() {
+        const session = localStorage.getItem('fruitshop_session');
+        if (!session) return null;
+        try { return JSON.parse(session); } catch { return null; }
+    }
+    
+    function isSessionValid(session) {
+        if (!session) return false;
+        return (Date.now() - session.loginTime) < 10 * 60 * 1000;
+    }
+    
+    function getCurrentUserEmail() {
+        const session = getSession();
+        return session && isSessionValid(session) ? session.email : null;
+    }
+    
+    function getUserWishlistKey(email) { 
+        return email ? `wishlist_${email}` : null; 
+    }
+    
+    function getUserWishlist(email) {
+        if (!email) return [];
+        return JSON.parse(localStorage.getItem(getUserWishlistKey(email)) || '[]');
+    }
+    
+    function setUserWishlist(email, wishlist) {
+        if (!email) return;
+        localStorage.setItem(getUserWishlistKey(email), JSON.stringify(wishlist));
+    }
+
+    // DOM elements
+    const wishlistList = document.getElementById('wishlist-list');
+    const wishlistEmpty = document.getElementById('wishlist-empty');
+    const wishlistLoginMsg = document.getElementById('wishlist-login-msg');
+    const email = getCurrentUserEmail();
+
+    if (!email) {
+        // User not logged in
+        wishlistList.style.display = 'none';
+        wishlistEmpty.style.display = 'none';
+        wishlistLoginMsg.style.display = 'block';
+    } else {
+        // User logged in - show wishlist
+        let wishlist = getUserWishlist(email);
+        
+        function renderWishlist() {
+            wishlistList.innerHTML = '';
+            
+            if (wishlist.length === 0) {
+                wishlistEmpty.style.display = 'block';
+            } else {
+                wishlistEmpty.style.display = 'none';
+                
+                // Remove undefined or invalid items
+                wishlist = wishlist.filter(itemObj => fruitData[itemObj.name]);
+                setUserWishlist(email, wishlist);
+                
+                wishlist.forEach((itemObj, idx) => {
+                    const item = itemObj.name;
+                    const qty = itemObj.qty || 1;
+                    const data = fruitData[item];
+                    
+                    if (!data) return; // skip undefined
+                    
+                    const div = document.createElement('div');
+                    div.className = 'product';
+                    div.innerHTML = `
+                        <img src="${data.img}" alt="${item}" style="width:100px;height:100px;border-radius:50%;margin-bottom:0.5rem;">
+                        <h3>${item} <span style='font-size:1rem;color:#888;'>(<button class='qty-btn' data-idx='${idx}' data-action='dec'>−</button> <span id='qty-${idx}'>${qty}</span> <button class='qty-btn' data-idx='${idx}' data-action='inc'>+</button>)</span></h3>
+                        <p>${data.rate}</p>
+                    `;
+                    wishlistList.appendChild(div);
+                });
+            }
+        }
+        
+        renderWishlist();
+        
+        // Quantity button event listeners
+        wishlistList.addEventListener('click', function(e) {
+            if (e.target.classList.contains('qty-btn')) {
+                const idx = parseInt(e.target.getAttribute('data-idx'));
+                const action = e.target.getAttribute('data-action');
+                
+                if (action === 'inc') {
+                    wishlist[idx].qty = (wishlist[idx].qty || 1) + 1;
+                } else if (action === 'dec') {
+                    wishlist[idx].qty = (wishlist[idx].qty || 1) - 1;
+                    if (wishlist[idx].qty <= 0) {
+                        wishlist.splice(idx, 1);
+                    }
+                }
+                
+                setUserWishlist(email, wishlist);
+                renderWishlist();
+            }
+        });
+    }
+    </script>
+</body>
+</html> 

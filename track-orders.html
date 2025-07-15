@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Track Orders - Fruits Vatika</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .track-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .track-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .track-header h1 {
+            color: #4caf50;
+            margin-bottom: 10px;
+        }
+        
+        .track-search {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        
+        .track-search input {
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            width: 300px;
+            margin-right: 10px;
+        }
+        
+        .track-search button {
+            background: #4caf50;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        
+        .track-search button:hover {
+            background: #45a049;
+        }
+        
+        .order-card {
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            overflow: hidden;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .order-header {
+            background: #4caf50;
+            color: white;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .order-id {
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+        
+        .order-date {
+            font-size: 0.9em;
+            opacity: 0.9;
+        }
+        
+        .order-content {
+            padding: 20px;
+        }
+        
+        .order-summary {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .summary-section {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 6px;
+        }
+        
+        .summary-section h3 {
+            margin: 0 0 10px 0;
+            color: #333;
+            font-size: 1em;
+        }
+        
+        .delivery-status {
+            margin-top: 20px;
+        }
+        
+        .status-timeline {
+            position: relative;
+            padding-left: 30px;
+        }
+        
+        .status-step {
+            position: relative;
+            margin-bottom: 20px;
+            padding-bottom: 20px;
+        }
+        
+        .status-step:not(:last-child)::after {
+            content: '';
+            position: absolute;
+            left: -15px;
+            top: 30px;
+            bottom: -20px;
+            width: 2px;
+            background: #ddd;
+        }
+        
+        .status-step.active::after {
+            background: #4caf50;
+        }
+        
+        .status-dot {
+            position: absolute;
+            left: -22px;
+            top: 5px;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #ddd;
+            border: 2px solid white;
+        }
+        
+        .status-step.active .status-dot {
+            background: #4caf50;
+        }
+        
+        .status-step.completed .status-dot {
+            background: #4caf50;
+        }
+        
+        .status-content h4 {
+            margin: 0 0 5px 0;
+            color: #333;
+        }
+        
+        .status-content p {
+            margin: 0;
+            color: #666;
+            font-size: 0.9em;
+        }
+        
+        .expected-time {
+            margin-top: 5px !important;
+            font-weight: 600 !important;
+            color: #2c5aa0 !important;
+            font-size: 13px !important;
+        }
+        
+        .status-step.active .status-content h4 {
+            color: #4caf50;
+        }
+        
+        .shipping-info {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 6px;
+            margin-top: 20px;
+        }
+        
+        .shipping-info h3 {
+            margin: 0 0 10px 0;
+            color: #333;
+        }
+        
+        .shipping-details {
+            line-height: 1.6;
+        }
+        
+        .no-orders {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+        }
+        
+        .no-orders h3 {
+            margin-bottom: 10px;
+        }
+        
+        @media (max-width: 768px) {
+            .order-summary {
+                grid-template-columns: 1fr;
+            }
+            
+            .track-search input {
+                width: 100%;
+                margin-right: 0;
+                margin-bottom: 10px;
+            }
+            
+            .order-header {
+                flex-direction: column;
+                gap: 10px;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Fruits Vatika</h1>
+        <nav>
+            <a href="index.html">Home</a>
+            <a href="cart.html">Cart</a>
+            <a href="wishlist.html">Wishlist</a>
+            <a href="track-orders.html" class="active">Track Orders</a>
+        </nav>
+        <div id="user-info" style="display:none;">
+            <span id="user-name">Hello, User</span>
+            <button id="signout-btn">Sign Out</button>
+        </div>
+    </header>
+
+    <div class="track-container">
+        <div class="track-header">
+            <h1>Track Your Orders</h1>
+            <p>View all your orders and their delivery status</p>
+        </div>
+
+        <div id="order-results">
+            <!-- Order results will be displayed here -->
+        </div>
+    </div>
+
+    <script>
+        // Session management functions
+        function getSession() {
+            const session = localStorage.getItem('fruitshop_session');
+            if (!session) return null;
+            try { return JSON.parse(session); } catch { return null; }
+        }
+        
+        function isSessionValid(session) {
+            if (!session) return false;
+            return (Date.now() - session.loginTime) < 10 * 60 * 1000;
+        }
+        
+        function getCurrentUserEmail() {
+            const session = getSession();
+            return session && isSessionValid(session) ? session.email : null;
+        }
+
+        // Show logged in user
+        function showLoggedInUser(email) {
+            const userData = sessionStorage.getItem('user');
+            if (!userData) return;
+            
+            try {
+                const user = JSON.parse(userData);
+                document.getElementById('user-name').textContent = `Hello, ${user.username}`;
+                document.getElementById('user-info').style.display = 'inline-block';
+            } catch (e) {
+                console.error('Error parsing user data:', e);
+            }
+        }
+
+        // Check session on page load
+        const session = getSession();
+        if (session && isSessionValid(session)) {
+            showLoggedInUser(session.email);
+        }
+
+        // Sign out functionality
+        const signoutBtn = document.getElementById('signout-btn');
+        if (signoutBtn) {
+            signoutBtn.addEventListener('click', function() {
+                localStorage.removeItem('fruitshop_session');
+                sessionStorage.removeItem('user');
+                document.getElementById('user-info').style.display = 'none';
+                window.location.href = 'index.html';
+            });
+        }
+
+        // Load all orders for the current user
+        async function loadAllOrders() {
+            const email = getCurrentUserEmail();
+            if (!email) {
+                document.getElementById('order-results').innerHTML = `
+                    <div class="no-orders">
+                        <h3>Please Login</h3>
+                        <p>Please <a href="index.html">login</a> to view your orders.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            try {
+                const userData = sessionStorage.getItem('user');
+                if (!userData) {
+                    document.getElementById('order-results').innerHTML = `
+                        <div class="no-orders">
+                            <h3>Session Expired</h3>
+                            <p>Please <a href="index.html">login again</a> to view your orders.</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                const user = JSON.parse(userData);
+                const response = await fetch(`http://localhost:5000/purchases/${user.id}`);
+                
+                if (response.ok) {
+                    const orders = await response.json();
+                    displayAllOrders(orders);
+                } else {
+                    document.getElementById('order-results').innerHTML = `
+                        <div class="no-orders">
+                            <h3>Error Loading Orders</h3>
+                            <p>Failed to load your orders. Please try again later.</p>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                console.error('Error loading orders:', error);
+                document.getElementById('order-results').innerHTML = `
+                    <div class="no-orders">
+                        <h3>Connection Error</h3>
+                        <p>Unable to connect to server. Please check your connection and try again.</p>
+                    </div>
+                `;
+            }
+        }
+
+        function displayAllOrders(orders) {
+            const resultsDiv = document.getElementById('order-results');
+            
+            if (orders.length === 0) {
+                resultsDiv.innerHTML = `
+                    <div class="no-orders">
+                        <h3>No Orders Found</h3>
+                        <p>You haven't placed any orders yet.</p>
+                        <p><a href="index.html">Start shopping</a> to place your first order!</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            let ordersHTML = '';
+            orders.forEach(order => {
+                ordersHTML += createOrderCard(order);
+            });
+            
+            resultsDiv.innerHTML = ordersHTML;
+        }
+
+        function createOrderCard(order) {
+            // Parse the date from the database
+            const orderDate = new Date(order.date);
+            const orderDay = orderDate.toLocaleDateString('en-US', { weekday: 'long' });
+            const orderDateStr = orderDate.toLocaleDateString('en-US', { 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric' 
+            });
+            const orderTime = orderDate.toLocaleTimeString('en-US', { 
+                hour: '2-digit', 
+                minute: '2-digit',
+                hour12: true 
+            });
+            
+            // Calculate total amount
+            const totalAmount = order.price * order.quantity;
+            
+            // Generate status based on order age (for demo purposes)
+            const now = new Date();
+            const hoursSinceOrder = (now - orderDate) / (1000 * 60 * 60);
+            let status, statusHistory;
+            
+            // Calculate expected delivery time (2 hours from order placement)
+            const expectedDeliveryTime = new Date(orderDate.getTime() + (2 * 60 * 60 * 1000));
+            const expectedDeliveryStr = expectedDeliveryTime.toLocaleTimeString('en-US', { 
+                hour: '2-digit', 
+                minute: '2-digit',
+                hour12: true 
+            });
+            
+            if (hoursSinceOrder < 2) {
+                status = 'order_placed';
+                statusHistory = [
+                    { status: 'order_placed', date: orderDateStr, time: orderTime }
+                ];
+            } else if (hoursSinceOrder < 24) {
+                status = 'order_shipped';
+                statusHistory = [
+                    { status: 'order_placed', date: orderDateStr, time: orderTime },
+                    { status: 'order_shipped', date: orderDateStr, time: orderTime }
+                ];
+            } else if (hoursSinceOrder < 48) {
+                status = 'in_transit';
+                statusHistory = [
+                    { status: 'order_placed', date: orderDateStr, time: orderTime },
+                    { status: 'order_shipped', date: orderDateStr, time: orderTime },
+                    { status: 'in_transit', date: orderDateStr, time: orderTime }
+                ];
+            } else {
+                status = 'out_for_delivery';
+                statusHistory = [
+                    { status: 'order_placed', date: orderDateStr, time: orderTime },
+                    { status: 'order_shipped', date: orderDateStr, time: orderTime },
+                    { status: 'in_transit', date: orderDateStr, time: orderTime },
+                    { status: 'out_for_delivery', date: orderDateStr, time: orderTime }
+                ];
+            }
+            
+            const statusConfig = {
+                'order_placed': { title: 'Order Placed', icon: '📋', expectedTime: '30 min' },
+                'order_shipped': { title: 'Order Shipped', icon: '📦', expectedTime: '1 hour' },
+                'in_transit': { title: 'In Transit', icon: '🚚', expectedTime: '1.5 hours' },
+                'out_for_delivery': { title: 'Out for Delivery', icon: '🛵', expectedTime: '2 hours' },
+                'delivered': { title: 'Delivered', icon: '✅', expectedTime: '2 hours' }
+            };
+            
+            const currentStatusIndex = statusHistory.length - 1;
+            
+            let statusHTML = '';
+            statusHistory.forEach((statusItem, index) => {
+                const statusInfo = statusConfig[statusItem.status];
+                const isActive = index === currentStatusIndex;
+                const isCompleted = index < currentStatusIndex;
+                const statusClass = isActive ? 'active' : (isCompleted ? 'completed' : '');
+                
+                // Add expected delivery time for relevant statuses
+                let expectedTimeText = '';
+                if (statusItem.status === 'in_transit' || statusItem.status === 'out_for_delivery' || statusItem.status === 'delivered') {
+                    expectedTimeText = `<p class="expected-time">Expected Delivery: ${expectedDeliveryStr}</p>`;
+                }
+                
+                statusHTML += `
+                    <div class="status-step ${statusClass}">
+                        <div class="status-dot"></div>
+                        <div class="status-content">
+                            <h4>${statusInfo.icon} ${statusInfo.title}</h4>
+                            <p>${statusItem.date} at ${statusItem.time}</p>
+                            ${expectedTimeText}
+                        </div>
+                    </div>
+                `;
+            });
+            
+            return `
+                <div class="order-card">
+                    <div class="order-header">
+                        <div class="order-id">Order ID: ${order.order_id || 'N/A'}</div>
+                        <div class="order-date">Ordered on ${orderDateStr} (${orderDay}) at ${orderTime}</div>
+                    </div>
+                    <div class="order-content">
+                        <div class="order-summary">
+                            <div class="summary-section">
+                                <h3>Order Summary</h3>
+                                <div><strong>Order Date:</strong> ${orderDateStr}</div>
+                                <div><strong>Order Day:</strong> ${orderDay}</div>
+                                <div><strong>Order Time:</strong> ${orderTime}</div>
+                                <div><strong>Total Amount:</strong> ₹${totalAmount.toFixed(2)}</div>
+                                <div><strong>Items:</strong></div>
+                                <div>${order.item_name} (${order.quantity}) - ₹${order.price} each</div>
+                            </div>
+                            <div class="summary-section">
+                                <h3>Shipping Information</h3>
+                                <div class="shipping-details">
+                                    ${order.shipping_address || 'No shipping address provided'}
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="delivery-status">
+                            <h3>Delivery Status</h3>
+                            <div class="status-timeline">
+                                ${statusHTML}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Load page content
+        window.onload = function() {
+            loadAllOrders();
+        };
+    </script>
+</body>
+</html> 
